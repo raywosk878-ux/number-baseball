@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#14382b">
+<title>숫자야구</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<script src="/static/socket.io.min.js"></script>
+<style>
+:root{
+  --field:#14382b; --field2:#1b4a39; --chalk:#f4f1e8; --dim:#9fb8ab;
+  --line:rgba(244,241,232,.14); --strike:#f6c344; --ball:#6cc4ff; --out:#ff7a6b;
+  --card:#0f2c21;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--field);color:var(--chalk);
+  font-family:Pretendard,-apple-system,system-ui,sans-serif}
+body{display:flex;justify-content:center}
+#app{width:100%;max-width:480px;min-height:100%;display:flex;flex-direction:column;
+  padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 14px)}
+.hidden{display:none!important}
+h1{font-size:30px;margin:28px 0 4px;letter-spacing:-.5px}
+.sub{color:var(--dim);font-size:14px;margin:0 0 28px;line-height:1.5}
+label{display:block;font-size:13px;color:var(--dim);margin:16px 0 6px}
+input{width:100%;font:inherit;font-size:18px;padding:14px;border-radius:12px;
+  border:1px solid var(--line);background:var(--card);color:var(--chalk);outline:none}
+input:focus{border-color:var(--strike)}
+button{font:inherit;border:0;border-radius:12px;cursor:pointer;touch-action:manipulation}
+.btn{width:100%;padding:15px;font-size:17px;font-weight:700;background:var(--strike);color:#1d1a10;margin-top:12px}
+.btn.ghost{background:transparent;color:var(--chalk);border:1px solid var(--line);font-weight:600}
+.btn:disabled{opacity:.4}
+.row{display:flex;gap:8px}
+.seg{display:flex;background:var(--card);border-radius:12px;padding:4px;border:1px solid var(--line)}
+.seg button{flex:1;padding:10px;background:transparent;color:var(--dim);font-weight:600}
+.seg button.on{background:var(--field2);color:var(--chalk)}
+.err{color:var(--out);font-size:14px;min-height:20px;margin-top:10px}
+.divider{display:flex;align-items:center;gap:10px;color:var(--dim);font-size:13px;margin:22px 0 4px}
+.divider:before,.divider:after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* 상단바 */
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.code{font-size:13px;color:var(--dim)}
+.code b{font-size:22px;color:var(--chalk);letter-spacing:3px;margin-left:6px;font-variant-numeric:tabular-nums}
+.pill{font-size:12px;padding:5px 10px;border-radius:99px;background:var(--card);border:1px solid var(--line);color:var(--dim)}
+.iconbtn{background:transparent;color:var(--dim);font-size:13px;padding:6px 8px}
+
+/* 선수 목록 */
+.players{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin:0 -16px;padding-left:16px;padding-right:16px;scrollbar-width:none}
+.players::-webkit-scrollbar{display:none}
+.pl{flex:0 0 auto;min-width:92px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 10px}
+.pl.me{border-color:var(--strike)}
+.pl.off{opacity:.45}
+.pl .nm{font-size:14px;font-weight:700;white-space:nowrap;display:flex;align-items:center;gap:4px}
+.pl .st{font-size:12px;color:var(--dim);margin-top:3px;font-variant-numeric:tabular-nums}
+.pl.win{background:#3a3315;border-color:var(--strike)}
+.crown{font-size:11px}
+
+/* 로비 */
+.lobby{flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center}
+.lobby .big{font-size:56px;letter-spacing:10px;font-weight:800;font-variant-numeric:tabular-nums;margin:6px 0}
+.lobby p{color:var(--dim);line-height:1.6;font-size:14px}
+
+/* 입력칸 */
+.slots{display:flex;justify-content:center;gap:10px;margin:14px 0 10px}
+.slot{width:58px;height:68px;border-radius:14px;background:var(--card);border:2px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:800;font-variant-numeric:tabular-nums}
+.slot.cur{border-color:var(--strike)}
+.keypad{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.key{padding:15px 0;font-size:22px;font-weight:700;background:var(--field2);color:var(--chalk)}
+.key:active{transform:scale(.96)}
+.key.used{opacity:.25}
+.actions{display:grid;grid-template-columns:1fr 2fr;gap:8px;margin-top:8px}
+.actions button{padding:15px;font-size:16px;font-weight:700}
+.del{background:var(--card);color:var(--chalk);border:1px solid var(--line)!important}
+.go{background:var(--strike);color:#1d1a10}
+.go:disabled{opacity:.35}
+
+/* 기록 */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-top:12px;overflow:hidden}
+.panel h3{margin:0;padding:10px 12px;font-size:13px;color:var(--dim);font-weight:600;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
+.hist{max-height:30vh;overflow-y:auto}
+.h{display:flex;align-items:center;padding:9px 12px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.h:last-child{border-bottom:0}
+.h .n{width:28px;color:var(--dim);font-size:13px}
+.h .g{flex:1;font-size:21px;font-weight:700;letter-spacing:6px}
+.h .r{display:flex;gap:6px}
+.tag{font-size:13px;font-weight:800;padding:4px 8px;border-radius:8px}
+.tS{background:rgba(246,195,68,.18);color:var(--strike)}
+.tB{background:rgba(108,196,255,.16);color:var(--ball)}
+.tO{background:rgba(255,122,107,.16);color:var(--out)}
+.feed{max-height:22vh;overflow-y:auto;font-size:13px}
+.feed div{padding:7px 12px;border-bottom:1px solid var(--line);color:var(--dim)}
+.feed .win{color:var(--strike);font-weight:700}
+.feed .start,.feed .end{color:var(--chalk);font-weight:600}
+.empty{padding:14px 12px;color:var(--dim);font-size:13px}
+
+/* 결과 */
+.result{text-align:center;padding:10px 0 4px}
+.result .ans{font-size:46px;font-weight:800;letter-spacing:10px;color:var(--strike);font-variant-numeric:tabular-nums}
+.rank{text-align:left}
+.rank .h .g{font-size:16px;letter-spacing:0}
+.banner{text-align:center;padding:12px;border-radius:12px;background:#3a3315;color:var(--strike);font-weight:700;margin:6px 0}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 24px);transform:translateX(-50%);
+  background:#000c;color:#fff;padding:10px 16px;border-radius:99px;font-size:14px;z-index:9;transition:opacity .2s}
+.shake{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.pop{animation:pop .35s}
+@keyframes pop{0%{transform:scale(.9);opacity:.4}100%{transform:scale(1);opacity:1}}
+.conn{position:fixed;top:0;left:0;right:0;background:var(--out);color:#fff;text-align:center;font-size:13px;padding:4px;z-index:10}
+</style>
+</head>
+<body>
+<div id="conn" class="conn hidden">연결이 끊겼어요 · 다시 연결 중…</div>
+<div id="app">
+
+  <!-- 입장 화면 -->
+  <section id="vEntry">
+    <h1>⚾ 숫자야구</h1>
+    <p class="sub">같은 비밀 숫자를 누가 먼저 맞히나 대결!<br>자리도 맞으면 <b style="color:var(--strike)">스트라이크</b>, 숫자만 맞으면 <b style="color:var(--ball)">볼</b></p>
+    <label>닉네임</label>
+    <input id="name" maxlength="12" placeholder="예: 재훈" autocomplete="off">
+    <label>방 코드로 들어가기</label>
+    <div class="row">
+      <input id="codeIn" inputmode="numeric" maxlength="4" placeholder="4자리 코드" style="letter-spacing:4px">
+      <button class="btn" id="joinBtn" style="width:110px;margin:0">입장</button>
+    </div>
+    <div class="divider">또는</div>
+    <label>새 방 만들기 (자릿수)</label>
+    <div class="seg" id="digitSeg">
+      <button data-d="3" class="on">3자리</button><button data-d="4">4자리</button>
+    </div>
+    <button class="btn ghost" id="createBtn">방 만들기</button>
+    <div class="err" id="entryErr"></div>
+  </section>
+
+  <!-- 방 화면 -->
+  <section id="vRoom" class="hidden" style="display:flex;flex-direction:column;flex:1">
+    <div class="top">
+      <div class="code">방 코드<b id="rCode">----</b></div>
+      <div class="row" style="align-items:center">
+        <span class="pill" id="rInfo">3자리</span>
+        <button class="iconbtn" id="shareBtn">공유</button>
+        <button class="iconbtn" id="leaveBtn">나가기</button>
+      </div>
+    </div>
+    <div class="players" id="players"></div>
+
+    <!-- 대기 -->
+    <div id="pLobby" class="lobby">
+      <p style="margin:0">친구들에게 방 코드를 알려주세요</p>
+      <div class="big" id="lCode">----</div>
+      <div id="hostCtl" class="hidden">
+        <div class="seg" id="digitSeg2" style="margin:14px 0 0">
+          <button data-d="3">3자리</button><button data-d="4">4자리</button>
+        </div>
+        <button class="btn" id="startBtn">게임 시작</button>
+      </div>
+      <p id="waitMsg" class="hidden">방장이 시작하길 기다리는 중…</p>
+    </div>
+
+    <!-- 게임 중 -->
+    <div id="pPlay" class="hidden">
+      <div id="solvedBanner" class="banner hidden"></div>
+      <div id="inputArea">
+        <div class="slots" id="slots"></div>
+        <div class="keypad" id="keypad"></div>
+        <div class="actions">
+          <button class="del" id="delBtn">지우기</button>
+          <button class="go" id="goBtn" disabled>던지기</button>
+        </div>
+      </div>
+      <div class="panel">
+        <h3><span>내 기록</span><span id="myCount"></span></h3>
+        <div class="hist" id="hist"><div class="empty">아직 던진 공이 없어요</div></div>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn ghost" id="giveUpBtn" style="margin:0;font-size:14px;padding:11px">포기</button>
+        <button class="btn ghost hidden" id="endBtn" style="margin:0;font-size:14px;padding:11px">라운드 종료 (방장)</button>
+      </div>
+    </div>
+
+    <!-- 결과 -->
+    <div id="pEnd" class="hidden">
+      <div class="result">
+        <div style="color:var(--dim);font-size:13px">정답</div>
+        <div class="ans" id="ans"></div>
+      </div>
+      <div class="panel rank"><h3><span>순위</span></h3><div id="rankList"></div></div>
+      <button class="btn hidden" id="againBtn">다음 라운드</button>
+      <p id="againWait" class="hidden" style="text-align:center;color:var(--dim);font-size:14px">방장이 다음 라운드를 시작하길 기다리는 중…</p>
+    </div>
+
+    <div class="panel" style="margin-top:12px">
+      <h3><span>실시간 중계</span></h3>
+      <div class="feed" id="feed"></div>
+    </div>
+  </section>
+</div>
+<div id="toast" class="toast hidden"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const socket = io({transports: ["websocket", "polling"]});
+let S = null;          // 서버 상태
+let digits = 3, buf = "", createDigits = 3;
+const store = {
+  get: k => { try { return localStorage.getItem(k) } catch(e){ return null } },
+  set: (k,v) => { try { localStorage.setItem(k,v) } catch(e){} },
+  del: k => { try { localStorage.removeItem(k) } catch(e){} },
+};
+
+// URL ?room=1234 지원
+const urlRoom = new URLSearchParams(location.search).get("room");
+if (urlRoom) $("#codeIn").value = urlRoom;
+$("#name").value = store.get("nb_name") || "";
+
+function toast(msg){
+  const t = $("#toast"); t.textContent = msg; t.classList.remove("hidden");
+  clearTimeout(toast._t); toast._t = setTimeout(()=>t.classList.add("hidden"), 1800);
+}
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
+function tags(s,b){
+  if (!s && !b) return '<span class="tag tO">OUT</span>';
+  return (s?`<span class="tag tS">${s}S</span>`:'') + (b?`<span class="tag tB">${b}B</span>`:'');
+}
+
+// ---------- 입장 ----------
+document.querySelectorAll("#digitSeg button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("#digitSeg button").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on"); createDigits = +b.dataset.d;
+});
+function entered(res){
+  if (!res.ok){ $("#entryErr").textContent = res.error; return; }
+  store.set("nb_room", res.code); store.set("nb_pid", res.pid);
+  history.replaceState(null, "", "?room=" + res.code);
+}
+$("#createBtn").onclick = () => {
+  const name = $("#name").value.trim();
+  if (!name) return $("#entryErr").textContent = "닉네임을 입력하세요";
+  store.set("nb_name", name);
+  socket.emit("create_room", {name, digits: createDigits}, entered);
+};
+$("#joinBtn").onclick = () => {
+  const name = $("#name").value.trim(), code = $("#codeIn").value.trim();
+  if (!name) return $("#entryErr").textContent = "닉네임을 입력하세요";
+  if (code.length !== 4) return $("#entryErr").textContent = "방 코드 4자리를 입력하세요";
+  store.set("nb_name", name);
+  const pid = store.get("nb_room") === code ? store.get("nb_pid") : null;
+  socket.emit("join_room", {name, code, pid}, entered);
+};
+
+// 재접속
+socket.on("connect", () => {
+  $("#conn").classList.add("hidden");
+  const code = store.get("nb_room"), pid = store.get("nb_pid");
+  if (code && pid && (!urlRoom || urlRoom === code)) {
+    socket.emit("join_room", {code, pid}, res => { if (!res.ok){ store.del("nb_room"); store.del("nb_pid"); show("entry"); } });
+  }
+});
+socket.on("disconnect", () => { if (S) $("#conn").classList.remove("hidden"); });
+
+function show(v){
+  $("#vEntry").classList.toggle("hidden", v !== "entry");
+  $("#vRoom").classList.toggle("hidden", v !== "room");
+  if (v === "entry") S = null;
+}
+
+// ---------- 방 ----------
+$("#leaveBtn").onclick = () => {
+  if (!confirm("방에서 나갈까요?")) return;
+  socket.emit("leave_room"); store.del("nb_room"); store.del("nb_pid");
+  history.replaceState(null, "", location.pathname); show("entry");
+};
+$("#shareBtn").onclick = async () => {
+  const url = location.origin + "/?room=" + S.code;
+  const text = `숫자야구 하자! 방 코드 ${S.code}`;
+  if (navigator.share) { try { await navigator.share({title:"숫자야구", text, url}); } catch(e){} }
+  else { try { await navigator.clipboard.writeText(url); toast("링크를 복사했어요"); } catch(e){ toast(url); } }
+};
+document.querySelectorAll("#digitSeg2 button").forEach(b => b.onclick = () => socket.emit("set_digits", {digits:+b.dataset.d}));
+$("#startBtn").onclick = () => socket.emit("start_game");
+$("#againBtn").onclick = () => socket.emit("start_game");
+$("#endBtn").onclick = () => { if (confirm("라운드를 끝내고 정답을 공개할까요?")) socket.emit("end_game"); };
+$("#giveUpBtn").onclick = () => { if (confirm("포기하면 이번 라운드는 더 못 던져요. 포기할까요?")) socket.emit("give_up"); };
+
+// ---------- 키패드 ----------
+function buildPad(){
+  const kp = $("#keypad"); kp.innerHTML = "";
+  [1,2,3,4,5,6,7,8,9,0].forEach(n => {
+    const b = document.createElement("button");
+    b.className = "key"; b.textContent = n; b.dataset.n = n;
+    b.onclick = () => press(String(n));
+    kp.appendChild(b);
+  });
+}
+buildPad();
+function press(n){
+  if (buf.length >= digits || buf.includes(n)) return;
+  buf += n; renderInput();
+}
+$("#delBtn").onclick = () => { buf = buf.slice(0,-1); renderInput(); };
+$("#goBtn").onclick = throwBall;
+function throwBall(){
+  if (buf.length !== digits) return;
+  const g = buf;
+  $("#goBtn").disabled = true;
+  socket.emit("guess", {guess: g}, res => {
+    if (!res || !res.ok){ toast(res ? res.error : "오류"); $("#slots").classList.add("shake"); setTimeout(()=>$("#slots").classList.remove("shake"),300); renderInput(); return; }
+    buf = ""; renderInput();
+    if (navigator.vibrate) navigator.vibrate(res.s === digits ? [80,60,80] : 30);
+  });
+}
+document.addEventListener("keydown", e => {
+  if (!S || S.status !== "playing" || document.activeElement.tagName === "INPUT") return;
+  if (/^\d$/.test(e.key)) press(e.key);
+  else if (e.key === "Backspace") { buf = buf.slice(0,-1); renderInput(); }
+  else if (e.key === "Enter") throwBall();
+});
+function renderInput(){
+  const sl = $("#slots"); sl.innerHTML = "";
+  for (let i=0;i<digits;i++){
+    const d = document.createElement("div");
+    d.className = "slot" + (i === buf.length ? " cur" : "");
+    d.textContent = buf[i] || ""; sl.appendChild(d);
+  }
+  document.querySelectorAll(".key").forEach(k => k.classList.toggle("used", buf.includes(k.dataset.n)));
+  $("#goBtn").disabled = buf.length !== digits;
+}
+
+// ---------- 상태 렌더 ----------
+let lastHistLen = 0;
+socket.on("state", st => {
+  const prevStatus = S && S.status, prevRound = S && S.round;
+  S = st; show("room");
+  if (digits !== st.digits || prevRound !== st.round) { digits = st.digits; buf = ""; }
+  const me = st.players.find(p => p.pid === st.me) || {};
+  const isHost = st.host === st.me;
+
+  $("#rCode").textContent = st.code; $("#lCode").textContent = st.code;
+  $("#rInfo").textContent = `${st.digits}자리` + (st.round ? ` · ${st.round}R` : "");
+
+  // 선수 카드
+  $("#players").innerHTML = st.players.map(p => {
+    let stat;
+    if (st.status === "lobby") stat = p.online ? "대기 중" : "오프라인";
+    else if (p.solved) stat = `🏆 ${p.rank}등 · ${p.attempts}회`;
+    else if (p.gaveup) stat = `포기 · ${p.attempts}회`;
+    else stat = p.last ? `${p.attempts}회 · ${p.last.s}S ${p.last.b}B` : "준비 중";
+    const cls = ["pl", p.pid===st.me?"me":"", p.online?"":"off", p.solved?"win":""].join(" ");
+    return `<div class="${cls}"><div class="nm">${p.pid===st.host?'<span class="crown">👑</span>':''}${esc(p.name)}</div><div class="st">${stat}</div></div>`;
+  }).join("");
+
+  // 패널 전환
+  $("#pLobby").classList.toggle("hidden", st.status !== "lobby");
+  $("#pPlay").classList.toggle("hidden", st.status !== "playing");
+  $("#pEnd").classList.toggle("hidden", st.status !== "ended");
+
+  if (st.status === "lobby"){
+    $("#hostCtl").classList.toggle("hidden", !isHost);
+    $("#waitMsg").classList.toggle("hidden", isHost);
+    document.querySelectorAll("#digitSeg2 button").forEach(b => b.classList.toggle("on", +b.dataset.d === st.digits));
+  }
+
+  if (st.status === "playing"){
+    const done = me.solved || me.gaveup;
+    $("#inputArea").classList.toggle("hidden", done);
+    $("#giveUpBtn").classList.toggle("hidden", done);
+    $("#endBtn").classList.toggle("hidden", !isHost);
+    $("#solvedBanner").classList.toggle("hidden", !done);
+    if (me.solved) $("#solvedBanner").textContent = `🎉 ${me.attempts}번 만에 정답! ${me.rank}등이에요. 다른 사람을 기다리는 중…`;
+    else if (me.gaveup) $("#solvedBanner").textContent = "포기했어요. 라운드가 끝나면 정답이 공개돼요.";
+    renderInput();
+  }
+
+  // 내 기록 (최신이 위)
+  const h = st.history || [];
+  $("#myCount").textContent = h.length ? `${h.length}회` : "";
+  $("#hist").innerHTML = h.length ? h.map((x,i)=>({x,i})).reverse().map(({x,i}) =>
+    `<div class="h ${i===h.length-1 && h.length>lastHistLen ? 'pop':''}"><span class="n">${i+1}</span><span class="g">${x.guess}</span><span class="r">${tags(x.s,x.b)}</span></div>`
+  ).join("") : '<div class="empty">아직 던진 공이 없어요</div>';
+  lastHistLen = h.length;
+
+  if (st.status === "ended"){
+    $("#ans").textContent = st.secret || "";
+    $("#rankList").innerHTML = st.players.map(p => {
+      const label = p.solved ? `${p.rank}등` : (p.gaveup ? "포기" : "미완료");
+      return `<div class="h"><span class="n">${p.solved?["🥇","🥈","🥉"][p.rank-1]||p.rank:"–"}</span><span class="g">${esc(p.name)}${p.pid===st.me?' (나)':''}</span><span class="r"><span class="tag ${p.solved?'tS':'tO'}">${label}</span><span class="tag tB">${p.attempts}회</span></span></div>`;
+    }).join("");
+    $("#againBtn").classList.toggle("hidden", !isHost);
+    $("#againWait").classList.toggle("hidden", isHost);
+  }
+
+  // 중계
+  $("#feed").innerHTML = st.feed.slice().reverse().map(f => `<div class="${f.kind}">${esc(f.text)}</div>`).join("") || '<div class="empty">—</div>';
+});
+</script>
+</body>
+</html>

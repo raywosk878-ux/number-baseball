@@ -22,7 +22,7 @@ body{display:flex;justify-content:center}
   padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 14px)}
 .hidden{display:none!important}
 h1{font-size:30px;margin:28px 0 4px;letter-spacing:-.5px}
-.sub{color:var(--dim);font-size:14px;margin:0 0 28px;line-height:1.5}
+.sub{color:var(--dim);font-size:14px;margin:0 0 20px;line-height:1.5}
 label{display:block;font-size:13px;color:var(--dim);margin:16px 0 6px}
 input{width:100%;font:inherit;font-size:18px;padding:14px;border-radius:12px;
   border:1px solid var(--line);background:var(--card);color:var(--chalk);outline:none}
@@ -33,18 +33,20 @@ button{font:inherit;border:0;border-radius:12px;cursor:pointer;touch-action:mani
 .btn:disabled{opacity:.4}
 .row{display:flex;gap:8px}
 .seg{display:flex;background:var(--card);border-radius:12px;padding:4px;border:1px solid var(--line)}
-.seg button{flex:1;padding:10px;background:transparent;color:var(--dim);font-weight:600}
+.seg button{flex:1;padding:10px 4px;background:transparent;color:var(--dim);font-weight:600;font-size:14px}
 .seg button.on{background:var(--field2);color:var(--chalk)}
+.seg + .seg{margin-top:8px}
+.desc{color:var(--dim);font-size:13px;line-height:1.55;margin:8px 2px 0;min-height:40px;text-align:left}
 .err{color:var(--out);font-size:14px;min-height:20px;margin-top:10px}
 .divider{display:flex;align-items:center;gap:10px;color:var(--dim);font-size:13px;margin:22px 0 4px}
 .divider:before,.divider:after{content:"";flex:1;height:1px;background:var(--line)}
 
 /* 상단바 */
-.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.code{font-size:13px;color:var(--dim)}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:6px}
+.code{font-size:13px;color:var(--dim);white-space:nowrap}
 .code b{font-size:22px;color:var(--chalk);letter-spacing:3px;margin-left:6px;font-variant-numeric:tabular-nums}
-.pill{font-size:12px;padding:5px 10px;border-radius:99px;background:var(--card);border:1px solid var(--line);color:var(--dim)}
-.iconbtn{background:transparent;color:var(--dim);font-size:13px;padding:6px 8px}
+.pill{font-size:12px;padding:5px 10px;border-radius:99px;background:var(--card);border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+.iconbtn{background:transparent;color:var(--dim);font-size:13px;padding:6px 6px;white-space:nowrap}
 
 /* 선수 목록 */
 .players{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin:0 -16px;padding-left:16px;padding-right:16px;scrollbar-width:none}
@@ -52,8 +54,9 @@ button{font:inherit;border:0;border-radius:12px;cursor:pointer;touch-action:mani
 .pl{flex:0 0 auto;min-width:92px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 10px}
 .pl.me{border-color:var(--strike)}
 .pl.off{opacity:.45}
+.pl.turn{border-color:var(--ball);box-shadow:0 0 0 1px var(--ball) inset}
 .pl .nm{font-size:14px;font-weight:700;white-space:nowrap;display:flex;align-items:center;gap:4px}
-.pl .st{font-size:12px;color:var(--dim);margin-top:3px;font-variant-numeric:tabular-nums}
+.pl .st{font-size:12px;color:var(--dim);margin-top:3px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .pl.win{background:#3a3315;border-color:var(--strike)}
 .crown{font-size:11px}
 
@@ -77,6 +80,15 @@ button{font:inherit;border:0;border-radius:12px;cursor:pointer;touch-action:mani
 .go{background:var(--strike);color:#1d1a10}
 .go:disabled{opacity:.35}
 
+/* 내 숫자 / 상대 선택 */
+.mysec{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px dashed var(--line);
+  border-radius:12px;padding:8px 12px;margin:4px 0 8px;font-size:13px;color:var(--dim)}
+.mysec b{font-size:20px;letter-spacing:5px;color:var(--chalk);font-variant-numeric:tabular-nums}
+.tlabel{font-size:13px;color:var(--dim);margin:8px 2px 6px}
+.targets{display:flex;gap:6px;flex-wrap:wrap}
+.targets button{padding:9px 12px;background:var(--card);color:var(--chalk);border:1px solid var(--line);font-size:14px;font-weight:600}
+.targets button.on{background:var(--ball);color:#0c2233;border-color:var(--ball)}
+
 /* 기록 */
 .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-top:12px;overflow:hidden}
 .panel h3{margin:0;padding:10px 12px;font-size:13px;color:var(--dim);font-weight:600;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
@@ -85,8 +97,9 @@ button{font:inherit;border:0;border-radius:12px;cursor:pointer;touch-action:mani
 .h:last-child{border-bottom:0}
 .h .n{width:28px;color:var(--dim);font-size:13px}
 .h .g{flex:1;font-size:21px;font-weight:700;letter-spacing:6px}
+.h .by{font-size:12px;color:var(--dim);margin-right:8px;max-width:30%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .h .r{display:flex;gap:6px}
-.tag{font-size:13px;font-weight:800;padding:4px 8px;border-radius:8px}
+.tag{font-size:13px;font-weight:800;padding:4px 8px;border-radius:8px;white-space:nowrap}
 .tS{background:rgba(246,195,68,.18);color:var(--strike)}
 .tB{background:rgba(108,196,255,.16);color:var(--ball)}
 .tO{background:rgba(255,122,107,.16);color:var(--out)}
@@ -99,16 +112,21 @@ button{font:inherit;border:0;border-radius:12px;cursor:pointer;touch-action:mani
 /* 결과 */
 .result{text-align:center;padding:10px 0 4px}
 .result .ans{font-size:46px;font-weight:800;letter-spacing:10px;color:var(--strike);font-variant-numeric:tabular-nums}
+.result .ans.txt{font-size:28px;letter-spacing:0;margin:4px 0}
 .rank{text-align:left}
 .rank .h .g{font-size:16px;letter-spacing:0}
-.banner{text-align:center;padding:12px;border-radius:12px;background:#3a3315;color:var(--strike);font-weight:700;margin:6px 0}
+.banner{text-align:center;padding:12px;border-radius:12px;background:#3a3315;color:var(--strike);font-weight:700;margin:6px 0;line-height:1.45}
+.banner.dim{background:var(--card);color:var(--chalk);font-weight:600;border:1px solid var(--line)}
+.banner.alert{background:rgba(255,122,107,.18);color:#ffd2cc}
 .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 24px);transform:translateX(-50%);
-  background:#000c;color:#fff;padding:10px 16px;border-radius:99px;font-size:14px;z-index:9;transition:opacity .2s}
+  background:#000c;color:#fff;padding:10px 16px;border-radius:99px;font-size:14px;z-index:9;transition:opacity .2s;max-width:90vw;text-align:center}
 .shake{animation:shake .3s}
 @keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .pop{animation:pop .35s}
 @keyframes pop{0%{transform:scale(.9);opacity:.4}100%{transform:scale(1);opacity:1}}
 .conn{position:fixed;top:0;left:0;right:0;background:var(--out);color:#fff;text-align:center;font-size:13px;padding:4px;z-index:10}
+.btnrow{display:flex;gap:8px;margin-top:8px}
+.btnrow .btn{margin:0;font-size:14px;padding:11px}
 </style>
 </head>
 <body>
@@ -118,7 +136,7 @@ button{font:inherit;border:0;border-radius:12px;cursor:pointer;touch-action:mani
   <!-- 입장 화면 -->
   <section id="vEntry">
     <h1>⚾ 숫자야구</h1>
-    <p class="sub">같은 비밀 숫자를 누가 먼저 맞히나 대결!<br>자리도 맞으면 <b style="color:var(--strike)">스트라이크</b>, 숫자만 맞으면 <b style="color:var(--ball)">볼</b></p>
+    <p class="sub">자리까지 맞으면 <b style="color:var(--strike)">스트라이크</b>, 숫자만 맞으면 <b style="color:var(--ball)">볼</b>!<br>친구들과 3가지 모드로 즐겨요.</p>
     <label>닉네임</label>
     <input id="name" maxlength="12" placeholder="예: 재훈" autocomplete="off">
     <label>방 코드로 들어가기</label>
@@ -127,10 +145,14 @@ button{font:inherit;border:0;border-radius:12px;cursor:pointer;touch-action:mani
       <button class="btn" id="joinBtn" style="width:110px;margin:0">입장</button>
     </div>
     <div class="divider">또는</div>
-    <label>새 방 만들기 (자릿수)</label>
+    <label>새 방 만들기</label>
+    <div class="seg" id="modeSeg">
+      <button data-m="race" class="on">동시 맞히기</button><button data-m="duel">1:1 대결</button><button data-m="battle">여럿이서</button>
+    </div>
     <div class="seg" id="digitSeg">
       <button data-d="3" class="on">3자리</button><button data-d="4">4자리</button>
     </div>
+    <p class="desc" id="modeDesc1"></p>
     <button class="btn ghost" id="createBtn">방 만들기</button>
     <div class="err" id="entryErr"></div>
   </section>
@@ -139,7 +161,7 @@ button{font:inherit;border:0;border-radius:12px;cursor:pointer;touch-action:mani
   <section id="vRoom" class="hidden" style="display:flex;flex-direction:column;flex:1">
     <div class="top">
       <div class="code">방 코드<b id="rCode">----</b></div>
-      <div class="row" style="align-items:center">
+      <div class="row" style="align-items:center;gap:2px">
         <span class="pill" id="rInfo">3자리</span>
         <button class="iconbtn" id="shareBtn">공유</button>
         <button class="iconbtn" id="leaveBtn">나가기</button>
@@ -152,17 +174,26 @@ button{font:inherit;border:0;border-radius:12px;cursor:pointer;touch-action:mani
       <p style="margin:0">친구들에게 방 코드를 알려주세요</p>
       <div class="big" id="lCode">----</div>
       <div id="hostCtl" class="hidden">
-        <div class="seg" id="digitSeg2" style="margin:14px 0 0">
+        <div class="seg" id="modeSeg2" style="margin-top:14px">
+          <button data-m="race">동시 맞히기</button><button data-m="duel">1:1 대결</button><button data-m="battle">여럿이서</button>
+        </div>
+        <div class="seg" id="digitSeg2">
           <button data-d="3">3자리</button><button data-d="4">4자리</button>
         </div>
-        <button class="btn" id="startBtn">게임 시작</button>
       </div>
+      <p class="desc" id="modeDesc2" style="text-align:center"></p>
+      <button class="btn hidden" id="startBtn">게임 시작</button>
       <p id="waitMsg" class="hidden">방장이 시작하길 기다리는 중…</p>
     </div>
 
-    <!-- 게임 중 -->
+    <!-- 게임 중 (숫자 정하기 + 진행) -->
     <div id="pPlay" class="hidden">
-      <div id="solvedBanner" class="banner hidden"></div>
+      <div id="banner" class="banner hidden"></div>
+      <div id="mySec" class="mysec hidden"><span>🔒 내 비밀 숫자</span><b id="mySecVal"></b></div>
+      <div id="targetBox" class="hidden">
+        <div class="tlabel" id="targetLabel">공격할 상대</div>
+        <div class="targets" id="targets"></div>
+      </div>
       <div id="inputArea">
         <div class="slots" id="slots"></div>
         <div class="keypad" id="keypad"></div>
@@ -172,23 +203,29 @@ button{font:inherit;border:0;border-radius:12px;cursor:pointer;touch-action:mani
         </div>
       </div>
       <div class="panel">
-        <h3><span>내 기록</span><span id="myCount"></span></h3>
+        <h3><span id="histTitle">내 기록</span><span id="myCount"></span></h3>
         <div class="hist" id="hist"><div class="empty">아직 던진 공이 없어요</div></div>
       </div>
-      <div class="row" style="margin-top:8px">
-        <button class="btn ghost" id="giveUpBtn" style="margin:0;font-size:14px;padding:11px">포기</button>
-        <button class="btn ghost hidden" id="endBtn" style="margin:0;font-size:14px;padding:11px">라운드 종료 (방장)</button>
+      <div class="panel hidden" id="defPanel">
+        <h3><span>🛡️ 내 숫자를 노린 공격</span><span id="defCount"></span></h3>
+        <div class="hist" id="defHist"></div>
+      </div>
+      <div class="btnrow">
+        <button class="btn ghost" id="giveUpBtn">포기</button>
+        <button class="btn ghost hidden" id="skipBtn">차례 넘기기 (방장)</button>
+        <button class="btn ghost hidden" id="endBtn">게임 종료 (방장)</button>
       </div>
     </div>
 
     <!-- 결과 -->
     <div id="pEnd" class="hidden">
       <div class="result">
-        <div style="color:var(--dim);font-size:13px">정답</div>
+        <div style="color:var(--dim);font-size:13px" id="ansLabel">정답</div>
         <div class="ans" id="ans"></div>
       </div>
       <div class="panel rank"><h3><span>순위</span></h3><div id="rankList"></div></div>
       <button class="btn hidden" id="againBtn">다음 라운드</button>
+      <button class="btn ghost hidden" id="lobbyBtn">모드 · 자릿수 바꾸기</button>
       <p id="againWait" class="hidden" style="text-align:center;color:var(--dim);font-size:14px">방장이 다음 라운드를 시작하길 기다리는 중…</p>
     </div>
 
@@ -202,9 +239,16 @@ button{font:inherit;border:0;border-radius:12px;cursor:pointer;touch-action:mani
 
 <script>
 const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
 const socket = io({transports: ["websocket", "polling"]});
 let S = null;          // 서버 상태
-let digits = 3, buf = "", createDigits = 3;
+let digits = 3, buf = "", createDigits = 3, createMode = "race";
+let selTarget = null, inputKey = "", lastHistLen = 0;
+const MODES = {
+  race:   {name: "동시 맞히기", desc: "서버가 정한 같은 비밀 숫자를 모두가 동시에 맞혀요. 적게 던져서 먼저 맞힌 순서대로 순위!"},
+  duel:   {name: "1:1 대결",   desc: "둘이 각자 비밀 숫자를 정하고 번갈아 상대 숫자를 맞혀요. 선공이 먼저 맞히면 후공에게 마지막 기회 한 번 (같이 맞히면 무승부)."},
+  battle: {name: "여럿이서",   desc: "각자 비밀 숫자를 정하고, 내 차례에 상대 한 명을 골라 공격! 숫자를 들키면 탈락, 마지막까지 살아남은 사람이 승리."},
+};
 const store = {
   get: k => { try { return localStorage.getItem(k) } catch(e){ return null } },
   set: (k,v) => { try { localStorage.setItem(k,v) } catch(e){} },
@@ -218,19 +262,23 @@ $("#name").value = store.get("nb_name") || "";
 
 function toast(msg){
   const t = $("#toast"); t.textContent = msg; t.classList.remove("hidden");
-  clearTimeout(toast._t); toast._t = setTimeout(()=>t.classList.add("hidden"), 1800);
+  clearTimeout(toast._t); toast._t = setTimeout(()=>t.classList.add("hidden"), 2000);
 }
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
 function tags(s,b){
   if (!s && !b) return '<span class="tag tO">OUT</span>';
   return (s?`<span class="tag tS">${s}S</span>`:'') + (b?`<span class="tag tB">${b}B</span>`:'');
 }
+function shake(){ $("#slots").classList.add("shake"); setTimeout(()=>$("#slots").classList.remove("shake"),300); }
+const meP = () => (S && S.players.find(p => p.pid === S.me)) || {};
+const nameOf = pid => { const p = S && S.players.find(x => x.pid === pid); return p ? p.name : "(나감)"; };
 
 // ---------- 입장 ----------
-document.querySelectorAll("#digitSeg button").forEach(b => b.onclick = () => {
-  document.querySelectorAll("#digitSeg button").forEach(x=>x.classList.remove("on"));
-  b.classList.add("on"); createDigits = +b.dataset.d;
-});
+function setSeg(sel, attr, val){ $$(sel + " button").forEach(b => b.classList.toggle("on", b.dataset[attr] === String(val))); }
+$$("#digitSeg button").forEach(b => b.onclick = () => { createDigits = +b.dataset.d; setSeg("#digitSeg","d",createDigits); });
+$$("#modeSeg button").forEach(b => b.onclick = () => { createMode = b.dataset.m; setSeg("#modeSeg","m",createMode); $("#modeDesc1").textContent = MODES[createMode].desc; });
+$("#modeDesc1").textContent = MODES[createMode].desc;
+
 function entered(res){
   if (!res.ok){ $("#entryErr").textContent = res.error; return; }
   store.set("nb_room", res.code); store.set("nb_pid", res.pid);
@@ -240,7 +288,7 @@ $("#createBtn").onclick = () => {
   const name = $("#name").value.trim();
   if (!name) return $("#entryErr").textContent = "닉네임을 입력하세요";
   store.set("nb_name", name);
-  socket.emit("create_room", {name, digits: createDigits}, entered);
+  socket.emit("create_room", {name, digits: createDigits, mode: createMode}, entered);
 };
 $("#joinBtn").onclick = () => {
   const name = $("#name").value.trim(), code = $("#codeIn").value.trim();
@@ -268,24 +316,42 @@ function show(v){
 }
 
 // ---------- 방 ----------
+const ackErr = res => { if (res && !res.ok) toast(res.error); };
 $("#leaveBtn").onclick = () => {
-  if (!confirm("방에서 나갈까요?")) return;
+  if (!confirm("방에서 나갈까요?" + (S && S.mode !== "race" && S.status === "playing" && meP().part && !meP().out ? "\n진행 중인 게임에서는 탈락 처리돼요." : ""))) return;
   socket.emit("leave_room"); store.del("nb_room"); store.del("nb_pid");
   history.replaceState(null, "", location.pathname); show("entry");
 };
 $("#shareBtn").onclick = async () => {
   const url = location.origin + "/?room=" + S.code;
-  const text = `숫자야구 하자! 방 코드 ${S.code}`;
+  const text = `숫자야구(${MODES[S.mode].name}) 하자! 방 코드 ${S.code}`;
   if (navigator.share) { try { await navigator.share({title:"숫자야구", text, url}); } catch(e){} }
   else { try { await navigator.clipboard.writeText(url); toast("링크를 복사했어요"); } catch(e){ toast(url); } }
 };
-document.querySelectorAll("#digitSeg2 button").forEach(b => b.onclick = () => socket.emit("set_digits", {digits:+b.dataset.d}));
-$("#startBtn").onclick = () => socket.emit("start_game");
-$("#againBtn").onclick = () => socket.emit("start_game");
-$("#endBtn").onclick = () => { if (confirm("라운드를 끝내고 정답을 공개할까요?")) socket.emit("end_game"); };
-$("#giveUpBtn").onclick = () => { if (confirm("포기하면 이번 라운드는 더 못 던져요. 포기할까요?")) socket.emit("give_up"); };
+$$("#digitSeg2 button").forEach(b => b.onclick = () => socket.emit("set_digits", {digits:+b.dataset.d}));
+$$("#modeSeg2 button").forEach(b => b.onclick = () => socket.emit("set_mode", {mode:b.dataset.m}));
+$("#startBtn").onclick = () => socket.emit("start_game", ackErr);
+$("#againBtn").onclick = () => socket.emit("start_game", ackErr);
+$("#lobbyBtn").onclick = () => socket.emit("to_lobby");
+$("#endBtn").onclick = () => {
+  const msg = S.status === "setup" ? "이번 판을 취소하고 대기실로 돌아갈까요?" : (S.mode === "race" ? "라운드를 끝내고 정답을 공개할까요?" : "게임을 끝내고 모두의 숫자를 공개할까요?");
+  if (confirm(msg)) socket.emit("end_game");
+};
+$("#skipBtn").onclick = () => { if (confirm(`${nameOf(S.turn)}님 차례를 넘길까요?`)) socket.emit("skip_turn"); };
+$("#giveUpBtn").onclick = () => {
+  const msg = S.mode === "race" ? "포기하면 이번 라운드는 더 못 던져요. 포기할까요?" : "포기하면 이번 판에서 탈락해요. 포기할까요?";
+  if (confirm(msg)) socket.emit("give_up");
+};
 
-// ---------- 키패드 ----------
+// ---------- 입력 ----------
+function inputMode(){
+  if (!S) return null;
+  const me = meP();
+  if (S.mode === "race") return (S.status === "playing" && !me.solved && !me.gaveup) ? "guess" : null;
+  if (S.status === "setup" && me.part && !me.ready) return "secret";
+  if (S.status === "playing" && S.turn === S.me && !me.out) return "attack";
+  return null;
+}
 function buildPad(){
   const kp = $("#keypad"); kp.innerHTML = "";
   [1,2,3,4,5,6,7,8,9,0].forEach(n => {
@@ -301,22 +367,27 @@ function press(n){
   buf += n; renderInput();
 }
 $("#delBtn").onclick = () => { buf = buf.slice(0,-1); renderInput(); };
-$("#goBtn").onclick = throwBall;
-function throwBall(){
-  if (buf.length !== digits) return;
+$("#goBtn").onclick = submit;
+function submit(){
+  const m = inputMode();
+  if (!m || buf.length !== digits) return;
+  if (m === "attack" && S.mode === "battle" && !selTarget) { toast("공격할 상대를 고르세요"); return; }
   const g = buf;
   $("#goBtn").disabled = true;
-  socket.emit("guess", {guess: g}, res => {
-    if (!res || !res.ok){ toast(res ? res.error : "오류"); $("#slots").classList.add("shake"); setTimeout(()=>$("#slots").classList.remove("shake"),300); renderInput(); return; }
+  const cb = res => {
+    if (!res || !res.ok){ toast(res ? res.error : "오류"); shake(); renderInput(); return; }
     buf = ""; renderInput();
     if (navigator.vibrate) navigator.vibrate(res.s === digits ? [80,60,80] : 30);
-  });
+  };
+  if (m === "guess") socket.emit("guess", {guess: g}, cb);
+  else if (m === "secret") socket.emit("set_secret", {secret: g}, cb);
+  else socket.emit("attack", {guess: g, target: selTarget}, cb);
 }
 document.addEventListener("keydown", e => {
-  if (!S || S.status !== "playing" || document.activeElement.tagName === "INPUT") return;
+  if (!inputMode() || document.activeElement.tagName === "INPUT") return;
   if (/^\d$/.test(e.key)) press(e.key);
   else if (e.key === "Backspace") { buf = buf.slice(0,-1); renderInput(); }
-  else if (e.key === "Enter") throwBall();
+  else if (e.key === "Enter") submit();
 });
 function renderInput(){
   const sl = $("#slots"); sl.innerHTML = "";
@@ -325,76 +396,195 @@ function renderInput(){
     d.className = "slot" + (i === buf.length ? " cur" : "");
     d.textContent = buf[i] || ""; sl.appendChild(d);
   }
-  document.querySelectorAll(".key").forEach(k => k.classList.toggle("used", buf.includes(k.dataset.n)));
+  $$(".key").forEach(k => k.classList.toggle("used", buf.includes(k.dataset.n)));
   $("#goBtn").disabled = buf.length !== digits;
 }
 
-// ---------- 상태 렌더 ----------
-let lastHistLen = 0;
+// ---------- 상태 수신 ----------
 socket.on("state", st => {
-  const prevStatus = S && S.status, prevRound = S && S.round;
+  const prevTurn = S && S.turn;
   S = st; show("room");
-  if (digits !== st.digits || prevRound !== st.round) { digits = st.digits; buf = ""; }
-  const me = st.players.find(p => p.pid === st.me) || {};
-  const isHost = st.host === st.me;
+  const key = [st.round, st.status, st.turn, st.digits].join("|");
+  if (key !== inputKey) { inputKey = key; digits = st.digits; buf = ""; }
+  if (st.turn === st.me && prevTurn !== st.me && navigator.vibrate) navigator.vibrate(60);
+  render();
+});
 
+function playerStat(p){
+  if (S.status === "lobby") return p.online ? "대기 중" : "오프라인";
+  if (S.mode === "race"){
+    if (p.solved) return `🏆 ${p.rank}등 · ${p.attempts}회`;
+    if (p.gaveup) return `포기 · ${p.attempts}회`;
+    if (S.status === "ended") return `미완료 · ${p.attempts}회`;
+    return p.last ? `${p.attempts}회 · ${p.last.s}S ${p.last.b}B` : "준비 중";
+  }
+  if (!p.part) return "관전";
+  if (S.status === "setup") return p.ready ? "✓ 준비 완료" : "숫자 정하는 중…";
+  if (p.out) return `탈락 · ${p.rank}등`;
+  if (S.status === "ended") return p.rank ? `🏆 ${p.rank}등` : `생존 · 공격 ${p.attacks}회`;
+  if (S.turn === p.pid) return "🎯 공격 차례" + (p.online ? "" : " (오프라인)");
+  return `공격 ${p.attacks}회`;
+}
+
+function render(){
+  const st = S, me = meP(), isHost = st.host === st.me, battle = st.mode !== "race";
   $("#rCode").textContent = st.code; $("#lCode").textContent = st.code;
-  $("#rInfo").textContent = `${st.digits}자리` + (st.round ? ` · ${st.round}R` : "");
+  $("#rInfo").textContent = `${MODES[st.mode].name} · ${st.digits}자리` + (st.round ? ` · ${st.round}R` : "");
 
   // 선수 카드
   $("#players").innerHTML = st.players.map(p => {
-    let stat;
-    if (st.status === "lobby") stat = p.online ? "대기 중" : "오프라인";
-    else if (p.solved) stat = `🏆 ${p.rank}등 · ${p.attempts}회`;
-    else if (p.gaveup) stat = `포기 · ${p.attempts}회`;
-    else stat = p.last ? `${p.attempts}회 · ${p.last.s}S ${p.last.b}B` : "준비 중";
-    const cls = ["pl", p.pid===st.me?"me":"", p.online?"":"off", p.solved?"win":""].join(" ");
-    return `<div class="${cls}"><div class="nm">${p.pid===st.host?'<span class="crown">👑</span>':''}${esc(p.name)}</div><div class="st">${stat}</div></div>`;
+    const won = st.status === "ended" && p.rank === 1 && (battle ? p.part : p.solved);
+    const cls = ["pl", p.pid===st.me?"me":"", (!p.online || p.out)?"off":"", (p.solved || won)?"win":"",
+                 st.turn===p.pid?"turn":""].join(" ");
+    return `<div class="${cls}"><div class="nm">${p.pid===st.host?'<span class="crown">👑</span>':''}${esc(p.name)}</div><div class="st">${playerStat(p)}</div></div>`;
   }).join("");
 
   // 패널 전환
+  const playing = st.status === "playing" || st.status === "setup";
   $("#pLobby").classList.toggle("hidden", st.status !== "lobby");
-  $("#pPlay").classList.toggle("hidden", st.status !== "playing");
+  $("#pPlay").classList.toggle("hidden", !playing);
   $("#pEnd").classList.toggle("hidden", st.status !== "ended");
 
   if (st.status === "lobby"){
     $("#hostCtl").classList.toggle("hidden", !isHost);
+    $("#startBtn").classList.toggle("hidden", !isHost);
     $("#waitMsg").classList.toggle("hidden", isHost);
-    document.querySelectorAll("#digitSeg2 button").forEach(b => b.classList.toggle("on", +b.dataset.d === st.digits));
+    setSeg("#digitSeg2", "d", st.digits);
+    setSeg("#modeSeg2", "m", st.mode);
+    const online = st.players.filter(p => p.online).length;
+    let extra = "";
+    if (st.mode === "duel") extra = online === 2 ? "" : ` (지금 ${online}명 · 2명이어야 시작 가능)`;
+    if (st.mode === "battle") extra = online >= 2 ? "" : " (2명 이상 필요)";
+    $("#modeDesc2").textContent = (isHost ? "" : `[${MODES[st.mode].name}] `) + MODES[st.mode].desc + extra;
   }
 
-  if (st.status === "playing"){
+  if (playing) renderPlay(st, me, isHost, battle);
+  if (st.status === "ended") renderEnd(st, battle, isHost);
+
+  // 중계
+  $("#feed").innerHTML = st.feed.slice().reverse().map(f => `<div class="${f.kind}">${esc(f.text)}</div>`).join("") || '<div class="empty">—</div>';
+}
+
+function setBanner(text, kind){
+  const b = $("#banner");
+  b.classList.toggle("hidden", !text);
+  b.className = "banner" + (kind ? " " + kind : "") + (text ? "" : " hidden");
+  b.textContent = text || "";
+}
+
+function histRows(list, withBy){
+  return list.map((x,i)=>({x,i})).reverse().map(({x,i}) =>
+    `<div class="h ${i===list.length-1 && list.length>lastHistLen ? 'pop':''}"><span class="n">${i+1}</span><span class="g">${x.guess}</span>${withBy?`<span class="by">${esc(nameOf(x.by))}</span>`:''}<span class="r">${tags(x.s,x.b)}</span></div>`
+  ).join("");
+}
+
+function renderPlay(st, me, isHost, battle){
+  const mode = inputMode();
+  $("#inputArea").classList.toggle("hidden", !mode);
+  $("#goBtn").textContent = mode === "secret" ? "이 숫자로 정하기" : (mode === "attack" ? "공격!" : "던지기");
+  $("#endBtn").classList.toggle("hidden", !isHost);
+  $("#endBtn").textContent = st.status === "setup" ? "취소 (방장)" : (battle ? "게임 종료 (방장)" : "라운드 종료 (방장)");
+  $("#skipBtn").classList.toggle("hidden", !(isHost && battle && st.status === "playing" && st.turn !== st.me));
+
+  if (!battle){
     const done = me.solved || me.gaveup;
-    $("#inputArea").classList.toggle("hidden", done);
     $("#giveUpBtn").classList.toggle("hidden", done);
-    $("#endBtn").classList.toggle("hidden", !isHost);
-    $("#solvedBanner").classList.toggle("hidden", !done);
-    if (me.solved) $("#solvedBanner").textContent = `🎉 ${me.attempts}번 만에 정답! ${me.rank}등이에요. 다른 사람을 기다리는 중…`;
-    else if (me.gaveup) $("#solvedBanner").textContent = "포기했어요. 라운드가 끝나면 정답이 공개돼요.";
+    $("#mySec").classList.add("hidden");
+    $("#targetBox").classList.add("hidden");
+    $("#defPanel").classList.add("hidden");
+    if (me.solved) setBanner(`🎉 ${me.attempts}번 만에 정답! ${me.rank}등이에요. 다른 사람을 기다리는 중…`);
+    else if (me.gaveup) setBanner("포기했어요. 라운드가 끝나면 정답이 공개돼요.", "dim");
+    else setBanner("");
+    const h = st.history || [];
+    $("#histTitle").textContent = "내 기록";
+    $("#myCount").textContent = h.length ? `${h.length}회` : "";
+    $("#hist").innerHTML = h.length ? histRows(h, false) : '<div class="empty">아직 던진 공이 없어요</div>';
+    lastHistLen = h.length;
     renderInput();
+    return;
   }
 
-  // 내 기록 (최신이 위)
-  const h = st.history || [];
-  $("#myCount").textContent = h.length ? `${h.length}회` : "";
-  $("#hist").innerHTML = h.length ? h.map((x,i)=>({x,i})).reverse().map(({x,i}) =>
-    `<div class="h ${i===h.length-1 && h.length>lastHistLen ? 'pop':''}"><span class="n">${i+1}</span><span class="g">${x.guess}</span><span class="r">${tags(x.s,x.b)}</span></div>`
-  ).join("") : '<div class="empty">아직 던진 공이 없어요</div>';
-  lastHistLen = h.length;
+  // ----- duel / battle -----
+  $("#giveUpBtn").classList.toggle("hidden", !(me.part && !me.out));
+  $("#mySec").classList.toggle("hidden", !st.my_secret);
+  $("#mySecVal").textContent = st.my_secret || "";
 
-  if (st.status === "ended"){
+  const parts = st.players.filter(p => p.part);
+  if (st.status === "setup"){
+    const ready = parts.filter(p => p.ready).length;
+    if (!me.part) setBanner("이번 판은 관전 중이에요. 다음 라운드부터 참가할 수 있어요.", "dim");
+    else if (!me.ready) setBanner(`🔒 상대가 맞힐 내 비밀 숫자를 정하세요 (서로 다른 숫자 ${st.digits}개)`);
+    else setBanner(`다른 사람이 숫자를 정하길 기다리는 중… (${ready}/${parts.length})`, "dim");
+    $("#targetBox").classList.add("hidden");
+    $("#histTitle").textContent = "기록";
+    $("#myCount").textContent = "";
+    $("#hist").innerHTML = '<div class="empty">모두 숫자를 정하면 시작해요</div>';
+    $("#defPanel").classList.add("hidden");
+    lastHistLen = 0;
+    renderInput();
+    return;
+  }
+
+  // playing
+  const opts = st.players.filter(p => p.part && !p.out && p.pid !== st.me);
+  if (!opts.some(p => p.pid === selTarget)) selTarget = opts.length ? opts[0].pid : null;
+  const myTurn = st.turn === st.me && !me.out;
+  const showSel = st.mode === "battle" && opts.length > 1;
+  $("#targetBox").classList.toggle("hidden", !showSel);
+  $("#targetLabel").textContent = myTurn ? "🎯 공격할 상대를 고르세요" : "누구의 기록을 볼까요?";
+  $("#targets").innerHTML = opts.map(p => `<button data-pid="${p.pid}" class="${p.pid===selTarget?'on':''}">${esc(p.name)}</button>`).join("");
+  $$("#targets button").forEach(b => b.onclick = () => { selTarget = b.dataset.pid; lastHistLen = Infinity; render(); });
+
+  const tName = selTarget ? nameOf(selTarget) : "";
+  if (myTurn){
+    if (st.last_chance && st.last_chance !== st.me) setBanner(`⚠️ 마지막 기회! ${nameOf(st.last_chance)}님이 내 숫자를 맞혔어요. 이번에 맞히면 무승부!`, "alert");
+    else setBanner(st.mode === "duel" ? "🎯 내 차례! 상대 숫자를 맞혀 보세요" : `🎯 내 차례! ${tName}님 숫자를 공격해요`);
+  } else if (me.part && me.out) setBanner(`탈락했어요 (${me.rank}등). 남은 사람들의 대결을 관전 중…`, "dim");
+  else if (!me.part) setBanner(`관전 중 · ${nameOf(st.turn)}님 차례`, "dim");
+  else if (st.last_chance === st.me) setBanner(`🎯 정답! ${nameOf(st.turn)}님의 마지막 기회를 기다리는 중…`);
+  else setBanner(`${nameOf(st.turn)}님 차례… 기다리는 중`, "dim");
+
+  // 상대 숫자 공략 기록 (누가 던졌든 모두)
+  const tl = selTarget ? st.log.filter(e => e.to === selTarget) : [];
+  $("#histTitle").textContent = selTarget ? `⚔️ ${tName}님 숫자 공략 기록` : "기록";
+  $("#myCount").textContent = tl.length ? `${tl.length}회` : "";
+  $("#hist").innerHTML = tl.length ? histRows(tl, st.mode === "battle") : '<div class="empty">아직 아무도 공격하지 않았어요</div>';
+  lastHistLen = tl.length;
+
+  // 내 숫자 방어 기록
+  const dl = st.log.filter(e => e.to === st.me);
+  $("#defPanel").classList.toggle("hidden", !me.part);
+  $("#defCount").textContent = dl.length ? `${dl.length}회` : "";
+  $("#defHist").innerHTML = dl.length ? histRows(dl, st.mode === "battle") : '<div class="empty">아직 공격받지 않았어요</div>';
+  renderInput();
+}
+
+function renderEnd(st, battle, isHost){
+  $("#againBtn").classList.toggle("hidden", !isHost);
+  $("#lobbyBtn").classList.toggle("hidden", !isHost);
+  $("#againWait").classList.toggle("hidden", isHost);
+  if (!battle){
+    $("#ansLabel").textContent = "정답";
+    $("#ans").className = "ans";
     $("#ans").textContent = st.secret || "";
     $("#rankList").innerHTML = st.players.map(p => {
       const label = p.solved ? `${p.rank}등` : (p.gaveup ? "포기" : "미완료");
       return `<div class="h"><span class="n">${p.solved?["🥇","🥈","🥉"][p.rank-1]||p.rank:"–"}</span><span class="g">${esc(p.name)}${p.pid===st.me?' (나)':''}</span><span class="r"><span class="tag ${p.solved?'tS':'tO'}">${label}</span><span class="tag tB">${p.attempts}회</span></span></div>`;
     }).join("");
-    $("#againBtn").classList.toggle("hidden", !isHost);
-    $("#againWait").classList.toggle("hidden", isHost);
+    return;
   }
-
-  // 중계
-  $("#feed").innerHTML = st.feed.slice().reverse().map(f => `<div class="${f.kind}">${esc(f.text)}</div>`).join("") || '<div class="empty">—</div>';
-});
+  const parts = st.players.filter(p => p.part);
+  const winners = parts.filter(p => p.rank === 1);
+  $("#ansLabel").textContent = "결과";
+  $("#ans").className = "ans txt";
+  $("#ans").textContent = winners.length > 1 ? "🤝 무승부" : (winners.length ? `🏆 ${winners[0].name}${winners[0].pid===st.me?' (나)':''} 승리!` : "게임 종료");
+  const secrets = st.secrets || {};
+  $("#rankList").innerHTML = parts.map(p => {
+    const medal = p.rank ? (["🥇","🥈","🥉"][p.rank-1] || p.rank) : "–";
+    const label = p.rank ? `${p.rank}등` : "생존";
+    return `<div class="h"><span class="n">${medal}</span><span class="g">${esc(p.name)}${p.pid===st.me?' (나)':''}</span><span class="r"><span class="tag tB">🔒 ${secrets[p.pid] || "?"}</span><span class="tag ${p.rank===1?'tS':'tO'}">${label}</span></span></div>`;
+  }).join("") || '<div class="empty">참가자가 없어요</div>';
+}
 </script>
 </body>
 </html>
